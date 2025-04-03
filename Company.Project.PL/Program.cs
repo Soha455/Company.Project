@@ -1,3 +1,11 @@
+using Company.Project.BLL.Interfaces;
+using Company.Project.BLL.Repositories;
+using Company.Project.DAL.Data.Contexts;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.SqlServer;
+using Company.Project.DAL.Models;
+using Microsoft.Extensions.Options;
+
 namespace Company.Project.PL
 {
     public class Program
@@ -7,7 +15,13 @@ namespace Company.Project.PL
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            builder.Services.AddControllersWithViews();
+            builder.Services.AddControllersWithViews();         // Register Built-in MVC Services 
+            builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>(); // Allow Dependency Injection in DepartmentRepository
+            builder.Services.AddDbContext<CompanyDbContext>(options =>
+            {
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+
+            }); // Allow Dependency Injection in CompanyDbContext
 
             var app = builder.Build();
 
@@ -32,5 +46,6 @@ namespace Company.Project.PL
 
             app.Run();
         }
+
     }
 }
