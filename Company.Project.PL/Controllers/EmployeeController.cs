@@ -2,6 +2,8 @@
 using Company.Project.DAL.Models;
 using Company.Project.PL.Dtos;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
+using System.Net;
 
 namespace Company.Project.PL.Controllers
 {
@@ -74,23 +76,57 @@ namespace Company.Project.PL.Controllers
         [HttpGet]
         public IActionResult Edit(int? id)
         {
-            return Details(id, "Edit");
+            if (id is null) return BadRequest("Invalid Id"); //400
+
+            var employee = _employeeRepository.Get(id.Value);
+
+            if (employee is null) return NotFound(new { statusCode = 404, message = $"Employee with Id :{id} is not found" });
+            var employeeDto = new CreateEmployeeDto()
+            {
+                Name = employee.Name,
+                Age = employee.Age,
+                Email = employee.Email,
+                Address = employee.Address,
+                Phone = employee.Phone,
+                Salary = employee.Salary,
+                HiringDate = employee.HiringDate,
+                IsActive = employee.IsActive,
+                IsDeleted = employee.IsDeleted,
+                CreateAt = employee.CreateAt
+
+            };
+            return View(employeeDto);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit([FromRoute] int id, Employee employee)
+        public IActionResult Edit([FromRoute] int id, CreateEmployeeDto model)
         {
             if (ModelState.IsValid)
             {
-                if (id != employee.Id) return BadRequest();   //400
+                //if (id != employee.Id) return BadRequest();   //400
+                var employee = new Employee()
+                {
+                    Id =id,
+                    Name = model.Name,
+                    Age = model.Age,
+                    Email = model.Email,
+                    Address = model.Address,
+                    Phone = model.Phone,
+                    Salary = model.Salary,
+                    HiringDate = model.HiringDate,
+                    IsActive = model.IsActive,
+                    IsDeleted = model.IsDeleted,
+                    CreateAt = model.CreateAt
+
+                };
                 var count = _employeeRepository.Update(employee);
                 if (count > 0)
                 {
                     return RedirectToAction(nameof(Index));
                 }
             }
-            return View(employee);
+            return View(model);
         }
 
         [HttpGet]
