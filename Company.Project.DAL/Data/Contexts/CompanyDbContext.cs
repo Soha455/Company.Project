@@ -37,5 +37,7 @@ namespace Company.Project.DAL.Data.Contexts
 
         //Mapping Entites to tables in DB 
         public DbSet<Department> Departments { get; set; }
+        public DbSet<Employee> Employees { get; set; }
+
     }
 }
