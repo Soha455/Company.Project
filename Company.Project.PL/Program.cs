@@ -17,6 +17,8 @@ namespace Company.Project.PL
             // Add services to the container.
             builder.Services.AddControllersWithViews();         // Register Built-in MVC Services 
             builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>(); // Allow Dependency Injection in DepartmentRepository
+            builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>(); // Allow Dependency Injection in EmployeeRepository 
+
             builder.Services.AddDbContext<CompanyDbContext>(options =>
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
