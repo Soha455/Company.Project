@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.SqlServer;
 using Company.Project.DAL.Models;
 using Microsoft.Extensions.Options;
+using Company.Project.PL.Mapping;
 
 namespace Company.Project.PL
 {
@@ -24,6 +25,14 @@ namespace Company.Project.PL
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 
             }); // Allow Dependency Injection in CompanyDbContext
+
+
+            // Dependency Injection LifeTime:
+            //1. builder.Services.AddScooped        : Create Object Life Time Per Request      - After Request ends become unreachable
+            //2. builder.Services.AddTransiant      : Create Object Life Time Per Operation   
+            //3. builder.Services.AddSingletoon     : Create Object Life Time Per Applitcation   
+
+            builder.Services.AddAutoMapper(M => M.AddProfile(new EmployeeProfile()));
 
             var app = builder.Build();
 
