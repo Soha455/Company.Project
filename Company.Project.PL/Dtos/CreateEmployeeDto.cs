@@ -31,5 +31,7 @@ namespace Company.Project.PL.Dtos
 
         [DisplayName("Date Of Creation")]
         public DateTime CreateAt { get; set; }
+
+        public int? DepartmentId { get; set; }
     }
 }
