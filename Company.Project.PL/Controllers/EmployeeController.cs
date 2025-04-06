@@ -11,18 +11,22 @@ namespace Company.Project.PL.Controllers
 {
     public class EmployeeController : Controller
     {
-        private readonly IEmployeeRepository _employeeRepository;
-        private readonly IDepartmentRepository _departmentRepository;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+
+        //private readonly IEmployeeRepository _employeeRepository;
+        //private readonly IDepartmentRepository _departmentRepository;
 
         // Ask CLR to create EmployeeRepository object and DepartmentRepository for the relationship.
         public EmployeeController(
-                                    IEmployeeRepository employeeRepository ,
-                                    IDepartmentRepository departmentRepository ,
+                                    //IEmployeeRepository employeeRepository ,
+                                    //IDepartmentRepository departmentRepository ,
+                                    IUnitOfWork unitOfWork,
                                     IMapper mapper)
         {
-            _employeeRepository = employeeRepository;
-            _departmentRepository = departmentRepository;
+            _unitOfWork = unitOfWork;
+            //_employeeRepository = employeeRepository;
+            //_departmentRepository = departmentRepository;
             _mapper = mapper;
         }
 
@@ -32,11 +36,11 @@ namespace Company.Project.PL.Controllers
             IEnumerable<Employee> employees;         // reference of class can refer to any object 
             if (string.IsNullOrEmpty(SearchInput))
             {
-                 employees = _employeeRepository.GetAll();
+                 employees = _unitOfWork.EmployeeRepository.GetAll();
             }
             else
             {
-                 employees = _employeeRepository.GetByName(SearchInput);
+                 employees = _unitOfWork.EmployeeRepository.GetByName(SearchInput);
             }
             //Dictionary : Container for each view in RunTime(Memory)
             // 1.ViewData : Transfer Extra information from controller (Action) to view
@@ -57,7 +61,7 @@ namespace Company.Project.PL.Controllers
         [HttpGet] //Get: /Employee/Create
         public IActionResult Create()
         {
-            var departments = _departmentRepository.GetAll(); 
+            var departments = _unitOfWork.DepartmentRepository.GetAll(); 
             ViewData ["departments"] = departments;
             return View();
         }
@@ -84,7 +88,9 @@ namespace Company.Project.PL.Controllers
 
                 //};
                 var employee = _mapper.Map<Employee>(model);
-                var count = _employeeRepository.Add(employee);
+                _unitOfWork.EmployeeRepository.Add(employee);
+                var count = _unitOfWork.Comlete();
+
                 if (count > 0)
                 {
                     TempData["Message"] = "Employee is added successfully";
@@ -100,7 +106,7 @@ namespace Company.Project.PL.Controllers
         {
             if (id is null) return BadRequest("Invalid Id"); //400
 
-            var employee = _employeeRepository.Get(id.Value);
+            var employee = _unitOfWork.EmployeeRepository.Get(id.Value);
 
             if (employee is null) return NotFound(new { statusCode = 404, message = $"Employee with Id :{id} is not found" });
 
@@ -110,10 +116,10 @@ namespace Company.Project.PL.Controllers
         [HttpGet]
         public IActionResult Edit(int? id)
         {
-            var departments = _departmentRepository.GetAll();
+            var departments = _unitOfWork.DepartmentRepository.GetAll();
             ViewData["departments"] = departments;
             if (id is null) return BadRequest("Invalid Id"); //400
-            var employee = _employeeRepository.Get(id.Value);
+            var employee = _unitOfWork.EmployeeRepository.Get(id.Value);
             if (employee is null) return NotFound(new { statusCode = 404, message = $"Employee with Id :{id} is not found" });
             //var employeeDto = new CreateEmployeeDto()
             //{
@@ -156,7 +162,9 @@ namespace Company.Project.PL.Controllers
                 //    CreateAt = model.CreateAt
 
                 //};
-                var count = _employeeRepository.Update(model);
+                _unitOfWork.EmployeeRepository.Update(model);
+                var count = _unitOfWork.Comlete();
+
                 if (count > 0)
                 {
                     return RedirectToAction(nameof(Index));
@@ -178,7 +186,9 @@ namespace Company.Project.PL.Controllers
             if (ModelState.IsValid)
             {
                 if (id != employee.Id) return BadRequest();   //400
-                var count = _employeeRepository.Delete(employee);
+                _unitOfWork.EmployeeRepository.Delete(employee);
+                var count = _unitOfWork.Comlete();
+
                 if (count > 0)
                 {
                     return RedirectToAction(nameof(Index));

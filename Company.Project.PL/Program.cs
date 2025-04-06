@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore.SqlServer;
 using Company.Project.DAL.Models;
 using Microsoft.Extensions.Options;
 using Company.Project.PL.Mapping;
+using Company.Project.BLL;
 
 namespace Company.Project.PL
 {
@@ -33,6 +34,9 @@ namespace Company.Project.PL
             //3. builder.Services.AddSingletoon     : Create Object Life Time Per Applitcation   
 
             builder.Services.AddAutoMapper(M => M.AddProfile(new EmployeeProfile()));
+            builder.Services.AddAutoMapper(M => M.AddProfile(new DepartmentProfile()));
+
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             var app = builder.Build();
 

@@ -1,4 +1,5 @@
-﻿using Company.Project.BLL.Interfaces;
+﻿using AutoMapper;
+using Company.Project.BLL.Interfaces;
 using Company.Project.DAL.Models;
 using Company.Project.PL.Dtos;
 using Microsoft.AspNetCore.Mvc;
@@ -7,19 +8,33 @@ namespace Company.Project.PL.Controllers
 {
     public class DepartmentController : Controller
     {
-        private readonly IDepartmentRepository _departmentRepository;
+        //private readonly IDepartmentRepository _departmentRepository;
+
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
 
         // Ask CLR to create DepartmentRepository object 
-        public DepartmentController(IDepartmentRepository departmentRepository)
+        public DepartmentController(/*IDepartmentRepository departmentRepository*/
+                                    IUnitOfWork unitOfWork,
+                                    IMapper mapper)
         {
-            _departmentRepository = departmentRepository;
+            //_departmentRepository = departmentRepository;
+            _unitOfWork = unitOfWork;
+            _mapper = mapper;
         }
 
         [HttpGet] //Get: /Department/Index
-        public IActionResult Index()
+        public IActionResult Index(string SearchInput)
         {
-            var departments = _departmentRepository.GetAll();
-
+            IEnumerable<Department> departments;         // reference of class can refer to any object 
+            if (string.IsNullOrEmpty(SearchInput))
+            {
+                departments = _unitOfWork.DepartmentRepository.GetAll();
+            }
+            else
+            {
+                departments = _unitOfWork.DepartmentRepository.GetByName(SearchInput);
+            }
             return View(departments);
         }
 
@@ -34,16 +49,18 @@ namespace Company.Project.PL.Controllers
         {
             if (ModelState.IsValid)
             {
-                var department = new Department() 
-                {
-                   Code = model.Code,
-                   Name = model.Name,
-                   CreateAt = model.CreateAt
-                };
-
-                var count = _departmentRepository.Add(department);
+                var department = _mapper.Map<Department>(model);
+                //var department = new Department() 
+                //{
+                //   Code = model.Code,
+                //   Name = model.Name,
+                //   CreateAt = model.CreateAt
+                //};
+                 _unitOfWork.DepartmentRepository.Add(department);
+                var count = _unitOfWork.Comlete();
                 if (count > 0)
-                { 
+                {
+                    TempData["Message"] = "Department is added successfully";
                     return RedirectToAction(nameof(Index));
                 }
             }
@@ -56,7 +73,7 @@ namespace Company.Project.PL.Controllers
         {
             if (id is null) return BadRequest("Invalid Id"); //400
 
-            var department = _departmentRepository.Get(id.Value);
+            var department = _unitOfWork.DepartmentRepository.Get(id.Value);
 
             if(department is null) return NotFound(new { statusCode = 404 , message = $"Department with Id :{id} is not found" });
 
@@ -66,11 +83,11 @@ namespace Company.Project.PL.Controllers
         [HttpGet]
         public IActionResult Edit(int? id)
         {
-            //if (id is null) return BadRequest("Invalid Id"); //400
+            if (id is null) return BadRequest("Invalid Id"); //400
 
-            //var department = _departmentRepository.Get(id.Value);
+            var department = _unitOfWork.DepartmentRepository.Get(id.Value);
 
-            //if (department is null) return NotFound(new { statusCode = 404, message = $"Department with Id :{id} is not found" });
+            if (department is null) return NotFound(new { statusCode = 404, message = $"Department with Id :{id} is not found" });
 
             return Details( id, "Edit");
         }
@@ -82,7 +99,9 @@ namespace Company.Project.PL.Controllers
             if (ModelState.IsValid)
             {
                 if (id != department.Id) return BadRequest();   //400
-                var count = _departmentRepository.Update(department);
+                _unitOfWork.DepartmentRepository.Update(department);
+                var count = _unitOfWork.Comlete();
+
                 if (count > 0)
                 {
                     return RedirectToAction(nameof(Index));
@@ -110,7 +129,9 @@ namespace Company.Project.PL.Controllers
             if (ModelState.IsValid)
             {
                 if (id != department.Id) return BadRequest();   //400
-                var count = _departmentRepository.Delete(department);
+                 _unitOfWork.DepartmentRepository.Delete(department);
+                var count = _unitOfWork.Comlete();
+
                 if (count > 0)
                 {
                     return RedirectToAction(nameof(Index));
