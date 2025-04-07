@@ -20,4 +20,8 @@
     <ProjectReference Include="..\Company.Project.BLL\Company.Project.BLL.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\files\Videos\" />
+  </ItemGroup>
+
 </Project>
