@@ -13,15 +13,14 @@ namespace Company.Project.BLL.Repositories
     public class DepartmentRepository : GenericRepository<Department> , IDepartmentRepository
     {
         private readonly CompanyDbContext _context;
-
         public DepartmentRepository(CompanyDbContext context) : base(context) // Ask CLR to Generate object from CompanyDbContext
         {
             _context = context;
         }
 
-        public List<Department> GetByName(string name)
+        public async Task<List<Department>> GetByNameAsync(string name)
         {
-            return _context.Departments.Where(E => E.Name.ToLower().Contains(name.ToLower())).ToList();
+            return await _context.Departments.Where(E => E.Name.ToLower().Contains(name.ToLower())).ToListAsync();
         }
 
 

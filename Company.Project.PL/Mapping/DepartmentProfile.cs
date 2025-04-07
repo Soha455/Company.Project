@@ -9,6 +9,7 @@ namespace Company.Project.PL.Mapping
         public DepartmentProfile()
         {
             CreateMap<CreateDepartmentDto, Department>();
+            CreateMap<Department, CreateDepartmentDto>();
         }
     }
 }
