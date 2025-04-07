@@ -11,8 +11,8 @@ namespace Company.Project.BLL.Interfaces
     {
         IEnumerable<T> GetAll();
         T? Get(int id);
-        int Add(T department);
-        int Update(T department);
-        int Delete(T department);
+        void Add(T department);
+        void Update(T department);
+        void Delete(T department);
     }
 }
