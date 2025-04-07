@@ -27,16 +27,27 @@ namespace Company.Project.BLL.Repositories
             return await _context.Set<T>().ToListAsync();
         }
 
-        public async Task<T?> GetAsync(int id)
+        //public async Task<T?> GetAsync(int id)
+        //{
+        //    if (typeof(T) == typeof(Employee))
+        //    {
+        //        return (IEnumerable<T>) await _context.Employees.Include(E => E.Department).FirstOrDefaultAsync(E => E.Id == id) as T;
+        //    }
+        //    return _context.Set<T>().Find(id);
+        //}
+
+        public async Task<T?> GetByIdAsync(int id)
         {
             if (typeof(T) == typeof(Employee))
             {
-                return (IEnumerable<T>) await _context.Employees.Include(E => E.Department).FirstOrDefaultAsync(E => E.Id == id) as T;
+                return await _context.Employees
+                    .Include(E => E.Department)
+                    .FirstOrDefaultAsync(E => E.Id == id) as T;
             }
             return _context.Set<T>().Find(id);
         }
 
-        public async Task AddAsync(T model)
+public async Task AddAsync(T model)
         {
            await _context.Set<T>().AddAsync(model);
         }
