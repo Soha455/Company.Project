@@ -73,7 +73,7 @@ namespace Company.Project.PL.Controllers
         {
             if (id is null) return BadRequest("Invalid Id"); //400
 
-            var department = await _unitOfWork.DepartmentRepository.GetAsync(id.Value);
+            var department = await _unitOfWork.DepartmentRepository.GetByIdAsync(id.Value);
 
             if(department is null) return NotFound(new { statusCode = 404 , message = $"Department with Id :{id} is not found" });
 
@@ -85,7 +85,7 @@ namespace Company.Project.PL.Controllers
         {
             if (id is null) return BadRequest("Invalid Id"); //400
 
-            var department = await _unitOfWork.DepartmentRepository.GetAsync(id.Value);
+            var department = await _unitOfWork.DepartmentRepository.GetByIdAsync(id.Value);
 
             if (department is null) return NotFound(new { statusCode = 404, message = $"Department with Id :{id} is not found" });
             var dto = _mapper.Map<CreateDepartmentDto>(department);

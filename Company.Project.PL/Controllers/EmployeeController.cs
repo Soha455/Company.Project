@@ -111,12 +111,15 @@ namespace Company.Project.PL.Controllers
         {
             if (id is null) return BadRequest("Invalid Id"); //400
 
-            var employee = await _unitOfWork.EmployeeRepository.GetAsync(id.Value);
+            var employee = await _unitOfWork.EmployeeRepository.GetByIdAsync(id.Value);
 
             if (employee is null) return NotFound(new { statusCode = 404, message = $"Employee with Id :{id} is not found" });
 
-            return View(viewName, employee);
+            var Dto = _mapper.Map<CreateEmployeeDto>(employee);
+
+            return View(viewName, Dto);
         }
+
 
         [HttpGet]
         public async Task<IActionResult> Edit(int? id , string viewName="Edit")
@@ -125,7 +128,7 @@ namespace Company.Project.PL.Controllers
             if (id is null) return BadRequest("Invalid Id"); //400
             var departments = await _unitOfWork.DepartmentRepository.GetAllAsync();
             ViewData["departments"] = departments;
-            var employee = await _unitOfWork.EmployeeRepository.GetAsync(id.Value);
+            var employee = await _unitOfWork.EmployeeRepository.GetByIdAsync(id.Value);
            
             if (employee is null) return NotFound(new { statusCode = 404, message = $"Employee with Id :{id} is not found" });
             var dto =_mapper.Map<CreateEmployeeDto>(employee);
@@ -176,12 +179,13 @@ namespace Company.Project.PL.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete([FromRoute] int id, Employee employee)
+        public async Task<IActionResult> Delete([FromRoute] int id, CreateEmployeeDto model)
         {
             if (ModelState.IsValid)
             {
+                var employee = _mapper.Map<Employee>(model);
                 if (id != employee.Id) return BadRequest();   //400
-                 _unitOfWork.EmployeeRepository.Delete(employee);
+                _unitOfWork.EmployeeRepository.Delete(employee);
                 var count = await _unitOfWork.CompleteAsync();
 
                 if (count > 0)
@@ -189,7 +193,7 @@ namespace Company.Project.PL.Controllers
                     return RedirectToAction(nameof(Index));
                 }
             }
-            return View(employee);
+            return View(model);
         }
 
     }
