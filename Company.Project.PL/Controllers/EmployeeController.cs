@@ -72,22 +72,6 @@ namespace Company.Project.PL.Controllers
         {
             if (ModelState.IsValid)
             {
-                // Manual Mapping
-                //var employee = new Employee()
-                //{
-                //    Name = model.Name,
-                //    Age = model.Age,
-                //    Email = model.Email,
-                //    Address = model.Address,
-                //    Phone = model.Phone,
-                //    Salary = model.Salary,
-                //    HiringDate = model.HiringDate,
-                //    IsActive = model.IsActive,
-                //    IsDeleted = model.IsDeleted,
-                //    CreateAt = model.CreateAt ,
-                //    DepartmentId = model.DepartmentId
-
-                //};
                 if (model.Image is not null)
                 { 
                     model.ImageName = DocumentSettings.UploadFile(model.Image,"images");
@@ -124,7 +108,6 @@ namespace Company.Project.PL.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(int? id , string viewName="Edit")
         {
-
             if (id is null) return BadRequest("Invalid Id"); //400
             var departments = await _unitOfWork.DepartmentRepository.GetAllAsync();
             ViewData["departments"] = departments;
@@ -156,7 +139,16 @@ namespace Company.Project.PL.Controllers
         {
             if (ModelState.IsValid)
             {
-                //if (id != model.Id) return BadRequest();   //400
+                if (model.Image is not null && model.Image is not null)
+                {
+                    DocumentSettings.DeleteFile(model.ImageName, "Images");
+                }
+
+                if (model.Image is not null)
+                {
+                    model.ImageName = DocumentSettings.UploadFile(model.Image, "Images");
+                }
+
                 var employee = _mapper.Map<Employee>(model);
                 employee.Id = id;
 

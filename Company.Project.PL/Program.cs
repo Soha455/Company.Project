@@ -7,6 +7,7 @@ using Company.Project.DAL.Models;
 using Microsoft.Extensions.Options;
 using Company.Project.PL.Mapping;
 using Company.Project.BLL;
+using Microsoft.AspNetCore.Identity;
 
 namespace Company.Project.PL
 {
@@ -37,6 +38,9 @@ namespace Company.Project.PL
             builder.Services.AddAutoMapper(M => M.AddProfile(new DepartmentProfile()));
 
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            builder.Services.AddIdentity<AppUser , IdentityRole>()
+                            .AddEntityFrameworkStores<CompanyDbContext>()
+                            .AddDefaultTokenProviders(); 
 
             var app = builder.Build();
 
