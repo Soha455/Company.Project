@@ -1,6 +1,7 @@
 ﻿using Azure.Identity;
 using Company.Project.DAL.Models;
 using Company.Project.PL.Dtos;
+using Company.Project.PL.Helpers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
@@ -117,5 +118,78 @@ namespace Company.Project.PL.Controllers
 
         #endregion
 
+        #region ForgetPassword
+
+        [HttpGet]
+        public IActionResult ForgetPassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SendResetPasswordUrl(ForgetPasswordDto model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.FindByEmailAsync(model.Email);
+                if (user is not null) 
+                {
+                    // Generate Token
+
+                    var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+                    // Create URL
+
+                    var url =  Url.Action("ResetPassword" , "Account" , new { email = model.Email , token } , Request.Scheme);
+
+
+                    // Create Email
+                    var email = new Helpers.Email()
+                    { 
+                        To = model.Email,
+                        Subject = "Reset Password" ,
+                        Body = url
+                    };
+
+                    // Send Email
+                    var flag = EmailSettings.SendEmail(email);
+                    if (flag) 
+                    {
+                        // Check Your Inbox
+                        return RedirectToAction("CheckYourInbox");
+                    }
+                }
+            }
+
+            ModelState.AddModelError("" ,"Invalid Reset Password !");
+            return View("ForgetPassword" ,model);
+        }
+
+        [HttpGet]
+        public IActionResult CheckYourInbox()
+        {
+            return View();
+        }
+
+        #endregion
+
+        #region ResetPassword
+
+        [HttpGet]
+        public IActionResult ResetPassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult ResetPassword(ResetPasswordDto model)
+        {
+            
+            return View(model);
+        }
+
+        #endregion
+
     }
 }
+ 
