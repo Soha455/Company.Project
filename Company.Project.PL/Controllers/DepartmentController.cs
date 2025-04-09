@@ -2,10 +2,12 @@
 using Company.Project.BLL.Interfaces;
 using Company.Project.DAL.Models;
 using Company.Project.PL.Dtos;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Company.Project.PL.Controllers
 {
+    [Authorize]
     public class DepartmentController : Controller
     {
         //private readonly IDepartmentRepository _departmentRepository;

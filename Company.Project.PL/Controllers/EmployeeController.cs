@@ -3,6 +3,7 @@ using Company.Project.BLL.Interfaces;
 using Company.Project.DAL.Models;
 using Company.Project.PL.Dtos;
 using Company.Project.PL.Helpers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using System.Collections;
@@ -10,6 +11,7 @@ using System.Net;
 
 namespace Company.Project.PL.Controllers
 {
+    [Authorize]
     public class EmployeeController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;

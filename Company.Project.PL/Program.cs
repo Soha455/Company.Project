@@ -40,7 +40,12 @@ namespace Company.Project.PL
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddIdentity<AppUser , IdentityRole>()
                             .AddEntityFrameworkStores<CompanyDbContext>()
-                            .AddDefaultTokenProviders(); 
+                            .AddDefaultTokenProviders();
+
+            builder.Services.ConfigureApplicationCookie(Config =>
+            {
+                Config.LoginPath = "/Account/SignIn";
+            });
 
             var app = builder.Build();
 
@@ -57,6 +62,7 @@ namespace Company.Project.PL
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllerRoute(
