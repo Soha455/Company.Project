@@ -106,7 +106,6 @@ namespace Company.Project.PL.Controllers
             return View(viewName, Dto);
         }
 
-
         [HttpGet]
         public async Task<IActionResult> Edit(int? id , string viewName="Edit")
         {
