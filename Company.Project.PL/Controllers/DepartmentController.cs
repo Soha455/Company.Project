@@ -132,22 +132,38 @@ namespace Company.Project.PL.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete([FromRoute] int id, Department department)
+        //public async Task<IActionResult> Delete([FromRoute] int id, Department model)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        var department = _mapper.Map<Department>(model);
+        //        if (id != department.Id) return BadRequest();   //400
+        //         _unitOfWork.DepartmentRepository.Delete(model);
+        //        var count = await _unitOfWork.CompleteAsync();
+
+        //        if (count > 0)
+        //        {
+        //            return RedirectToAction(nameof(Index));
+        //        }
+        //    }
+        //    return View(model);
+        //}
+
+        public async Task<IActionResult> Delete([FromRoute] int? id, Department model)
         {
-            if (ModelState.IsValid)
+            if (id is null) return BadRequest($" This Id = {id} InValid");
+
+            var department = await _unitOfWork.DepartmentRepository.GetByIdAsync(id.Value);
+            _unitOfWork.DepartmentRepository.Delete(department);
+            var Count = await _unitOfWork.CompleteAsync();
+
+            if (Count > 0)
             {
-                if (id != department.Id) return BadRequest();   //400
-                 _unitOfWork.DepartmentRepository.Delete(department);
-                var count = await _unitOfWork.CompleteAsync();
-
-                if (count > 0)
-                {
-                    return RedirectToAction(nameof(Index));
-                }
+                return RedirectToAction(nameof(Index));
             }
-            return View(department);
+            
+            return View(model);
         }
-
 
 
     }

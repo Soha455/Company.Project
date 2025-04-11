@@ -14,10 +14,8 @@ namespace Company.Project.PL.Helpers
             {
                 var client = new SmtpClient("smtp.gmail.com", 587);
                 client.EnableSsl = true;      // HTTPS
-
                 //Do not forget to remove spaces from password
-                client.Credentials = new NetworkCredential("sohaeid341@gmail.com", "");   // Sender , Gmail Password for this WebApp
-                
+                client.Credentials = new NetworkCredential("sohaeid341@gmail.com", "zgffaywjudshyice");   // Sender , Gmail Password for this WebApp
                 client.Send("sohaeid341@gmail.com", email.To, email.Subject, email.Body);
 
                 return true;
