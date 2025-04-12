@@ -11,7 +11,6 @@ namespace Company.Project.PL.Controllers
     public class DepartmentController : Controller
     {
         //private readonly IDepartmentRepository _departmentRepository;
-
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
@@ -24,6 +23,8 @@ namespace Company.Project.PL.Controllers
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
+
+
 
         [HttpGet] //Get: /Department/Index
         public async Task<IActionResult> Index(string SearchInput)
@@ -83,7 +84,7 @@ namespace Company.Project.PL.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int? id , string viewName = "Edit")
         {
             if (id is null) return BadRequest("Invalid Id"); //400
 
@@ -103,11 +104,11 @@ namespace Company.Project.PL.Controllers
             if (ModelState.IsValid)
             {
                 var department = _mapper.Map<Department>(model);
-
-                if (id != department.Id) return BadRequest();   //400
+                department.Id = id;
 
                 _unitOfWork.DepartmentRepository.Update(department);
                 var count = await _unitOfWork.CompleteAsync();
+
 
                 if (count > 0)
                 {

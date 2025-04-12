@@ -11,12 +11,13 @@
 
 <form asp-action="Edit" enctype="multipart/form-data">
     
-    <Partial name="EmployeePartialView/_CreateEditPartialView" />
+    <Partial name="EmployeePartialView/_CreateEditPartialView" model="@Model"/>
+    <a asp-action="AddOrRemoveUsers" asp-route-roleId="@Model.Id" class="btn btn-success">Add Or Remove User</a>
 
-    <div>
-        <input type="submit" value="Save" class="btn btn-warning"/>
-        <a asp-action="Index" class="btn btn-light">Back To List</a>
-    </div>
+    <input type="submit" value="Save" asp-action="Edit" class="btn btn-primary" />
+    <a asp-controller="Role" asp-action="Index" class="btn btn-light">Back To List</a>
+
+ 
 </form>
 
 @section ValidationSection {

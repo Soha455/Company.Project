@@ -78,6 +78,7 @@ namespace Company.Project.PL.Controllers
                 { 
                     model.ImageName = DocumentSettings.UploadFile(model.Image,"images");
                 }
+
                 var employee = _mapper.Map<Employee>(model);
                 await _unitOfWork.EmployeeRepository.AddAsync(employee);
                 var count = await _unitOfWork.CompleteAsync();
@@ -101,9 +102,9 @@ namespace Company.Project.PL.Controllers
 
             if (employee is null) return NotFound(new { statusCode = 404, message = $"Employee with Id :{id} is not found" });
 
-            var Dto = _mapper.Map<CreateEmployeeDto>(employee);
+            //var Dto = _mapper.Map<CreateEmployeeDto>(employee);
 
-            return View(viewName, Dto);
+            return View(viewName, employee);
         }
 
         [HttpGet]
@@ -142,12 +143,12 @@ namespace Company.Project.PL.Controllers
             {
                 if (model.Image is not null && model.Image is not null)
                 {
-                    DocumentSettings.DeleteFile(model.ImageName, "Images");
+                    DocumentSettings.DeleteFile(model.ImageName, "images");
                 }
 
                 if (model.Image is not null)
                 {
-                    model.ImageName = DocumentSettings.UploadFile(model.Image, "Images");
+                    model.ImageName = DocumentSettings.UploadFile(model.Image, "images");
                 }
 
                 var employee = _mapper.Map<Employee>(model);
@@ -172,7 +173,7 @@ namespace Company.Project.PL.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete([FromRoute] int id, CreateEmployeeDto model)
+        public async Task<IActionResult> Delete([FromRoute] int id, Employee model)
         {
             if (ModelState.IsValid)
             {
