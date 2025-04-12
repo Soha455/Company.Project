@@ -11,7 +11,11 @@
 
 <div>
     <div class="my-3">
-        <div>
+
+        <Partial name="DepartmentPartialView/_DeleteDetailsPartialView" />
+
+
+        @* <div>
             <label asp-for="Code" class="col-form-label"></label>
             <input asp-for="Code" class="form-control" readonly/>
         </div>
@@ -24,7 +28,7 @@
             <label asp-for="CreateAt" class="col-form-label"></label>
             <input asp-for="CreateAt" class="form-control" readonly />
 
-        </div>
+        </div> *@
     </div>
     <div>
         <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>

@@ -47,7 +47,7 @@ namespace Company.Project.BLL.Repositories
             return _context.Set<T>().Find(id);
         }
 
-public async Task AddAsync(T model)
+        public async Task AddAsync(T model)
         {
            await _context.Set<T>().AddAsync(model);
         }

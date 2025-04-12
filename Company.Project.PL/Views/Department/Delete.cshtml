@@ -9,7 +9,10 @@
 <br />
 
 <form asp-action="Delete">
-    <div class="my-3">
+
+    <Partial name="DepartmentPartialView/_DeleteDetailsPartialView" />
+
+    @* <div class="my-3">
         <div>
             <label asp-for="Code" class="col-form-label"></label>
             <input asp-for="Code" class="form-control" readonly />
@@ -24,9 +27,12 @@
             <input asp-for="CreateAt" class="form-control" readonly />
 
         </div>
-    </div>
+    </div> *@
+
     <div>
         <input type="submit" value="Delete" class="btn btn-danger" />
         <a asp-action="Index" class="btn btn-light">Back To List</a>
     </div>
+
+
 </form>

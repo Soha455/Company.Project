@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Drawing;
+using AutoMapper;
 using Company.Project.BLL.Interfaces;
 using Company.Project.DAL.Models;
 using Company.Project.PL.Dtos;
