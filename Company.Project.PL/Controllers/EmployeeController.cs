@@ -77,7 +77,7 @@ namespace Company.Project.PL.Controllers
             {
                 if (model.Image is not null)
                 { 
-                    model.ImageName = DocumentSettings.UploadFile(model.Image,"images");
+                    model.ImageName = DocumentSettings.UploadFile(model.Image,"Images");
                 }
 
                 var employee = _mapper.Map<Employee>(model);
