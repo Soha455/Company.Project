@@ -3,10 +3,11 @@
     public static class DocumentSettings
     {
         // Upload 
-        public static string UploadFile(IFormFile file, string foldername)
+        public static string UploadFile(IFormFile file, string folderName)
         {
             // 1.Get Folder Location
-            var folderPath = Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\Files", foldername);
+            //D:\.net\MVC\TheProject\Company.Project\Company.Project.PL\wwwroot\Files\Images\
+            var folderPath = Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\Files", folderName);
 
             // 2.Get File Name & Make it unique
             var fileName = $"{Guid.NewGuid()}{file.FileName}";
